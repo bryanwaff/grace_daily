@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grace_daily/core/utils/image_strings.dart';
+import 'package:grace_daily/core/widgets/bottom_nav_bar.dart';
 import 'package:grace_daily/theme/gdaily_colors.dart';
 import 'package:grace_daily/theme/gdaily_typography.dart';
 
@@ -19,11 +21,6 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.menu_rounded, size: 28),
-                    color: GdailyColors.primaryOlive,
-                    onPressed: () {},
-                  ),
                   Expanded(
                     child: Center(
                       child: Text(
@@ -32,15 +29,10 @@ class HomeScreen extends StatelessWidget {
                           fontFamily: 'Newsreader',
                           fontStyle: FontStyle.italic,
                           color: GdailyColors.primaryOlive,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.settings_rounded, size: 26),
-                    color: GdailyColors.primaryOlive,
-                    onPressed: () {},
                   ),
                 ],
               ),
@@ -57,11 +49,11 @@ class HomeScreen extends StatelessWidget {
                     left: 24,
                     right: 24,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(18),
                       child: AspectRatio(
                         aspectRatio: 1.6,
                         child: Image.asset(
-                          'assets/sample_landscape.jpg', // Replace with your asset
+                          GdailyImages.homeIntro,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -69,14 +61,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                   // Overlapping verse card
                   Positioned(
-                    top: 100,
+                    top: 160,
                     left: 0,
                     right: 0,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
                       child: Material(
                         elevation: 4,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(12),
                         color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
@@ -157,46 +149,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             // --- Bottom Navigation Bar ---
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12, left: 12, right: 12, top: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _NavTab(
-                      icon: Icons.today_rounded,
-                      label: 'Today',
-                      selected: true,
-                      onTap: () {},
-                    ),
-                    _NavTab(
-                      icon: Icons.menu_book_rounded,
-                      label: 'Reflection',
-                      selected: false,
-                      onTap: () => context.go('/home/reflection'),
-                    ),
-                    _NavTab(
-                      icon: Icons.self_improvement_rounded,
-                      label: 'Prayer',
-                      selected: false,
-                      onTap: () => context.go('/home/prayer'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            BottomNavBar(currentRoute: 'home'),
           ],
         ),
       ),
@@ -213,52 +166,3 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _NavTab extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  const _NavTab({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-          decoration: selected
-              ? BoxDecoration(
-                  color: GdailyColors.primaryOlive.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(16),
-                )
-              : null,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon,
-                  color: selected
-                      ? GdailyColors.primaryOlive
-                      : GdailyColors.textMedium,
-                  size: 24),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: GdailyTypography.lightTextTheme.labelMedium?.copyWith(
-                  color: selected
-                      ? GdailyColors.primaryOlive
-                      : GdailyColors.textMedium,
-                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

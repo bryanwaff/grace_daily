@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grace_daily/core/widgets/bottom_nav_bar.dart';
 import 'package:grace_daily/theme/gdaily_colors.dart';
 import 'package:grace_daily/theme/gdaily_typography.dart';
 
@@ -34,116 +35,126 @@ class _PrayerScreenState extends State<PrayerScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Share your heart with God',
-                style: GdailyTypography.lightTextTheme.headlineSmall,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Write your prayers, praises, and petitions. God is listening.',
-                style: GdailyTypography.lightTextTheme.bodyMedium?.copyWith(
-                  color: GdailyColors.textMedium,
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Suggested prayer starters
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Prayer Starters:',
-                        style: GdailyTypography.lightTextTheme.titleSmall?.copyWith(
-                          color: GdailyColors.primaryOlive,
-                        ),
+                        'Share your heart with God',
+                        style: GdailyTypography.lightTextTheme.headlineSmall,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       Text(
-                        '• Thank God for His provision\n• Ask for guidance in your day\n• Pray for loved ones\n• Seek wisdom for decisions',
-                        style: GdailyTypography.lightTextTheme.bodySmall?.copyWith(
+                        'Write your prayers, praises, and petitions. God is listening.',
+                        style: GdailyTypography.lightTextTheme.bodyMedium?.copyWith(
                           color: GdailyColors.textMedium,
                         ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Suggested prayer starters
+                      Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Prayer Starters:',
+                                style: GdailyTypography.lightTextTheme.titleSmall?.copyWith(
+                                  color: GdailyColors.primaryOlive,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '• Thank God for His provision\n• Ask for guidance in your day\n• Pray for loved ones\n• Seek wisdom for decisions',
+                                style: GdailyTypography.lightTextTheme.bodySmall?.copyWith(
+                                  color: GdailyColors.textMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      SizedBox(
+                        height: 200,
+                        child: TextField(
+                          controller: _prayerController,
+                          maxLines: null,
+                          expands: true,
+                          decoration: InputDecoration(
+                            hintText: 'Write your prayer here...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          style: GdailyTypography.lightTextTheme.bodyLarge,
+                          textAlignVertical: TextAlignVertical.top,
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => context.go('/home/reflection'),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 56),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                'Back',
+                                style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
+                                  color: GdailyColors.primaryOlive,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => context.go('/home/success'),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 56),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                'Complete',
+                                style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              Expanded(
-                child: TextField(
-                  controller: _prayerController,
-                  maxLines: null,
-                  expands: true,
-                  decoration: InputDecoration(
-                    hintText: 'Write your prayer here...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  style: GdailyTypography.lightTextTheme.bodyLarge,
-                  textAlignVertical: TextAlignVertical.top,
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => context.go('/home/reflection'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 56),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Back',
-                        style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
-                          color: GdailyColors.primaryOlive,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => context.go('/home/success'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 56),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Complete',
-                        style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+            BottomNavBar(currentRoute: 'prayer'),
+          ],
         ),
       ),
     );
