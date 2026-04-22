@@ -32,9 +32,10 @@ android {
 
     buildTypes {
         release {
-            // Disable code shrinking for now to avoid R8 issues
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // Enable code shrinking and resource shrinking for smaller APK
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
@@ -44,10 +45,10 @@ android {
     // Split APKs by ABI for smaller downloads (Release only)
     splits {
         abi {
-            isEnable = false  // Disabled for debug builds to avoid conflicts
+            isEnable = true  // Enabled to create separate APKs per architecture
             reset()
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = true
+            include("arm64-v8a")  // Primary architecture - covers most modern devices
+            isUniversalApk = false  // Set to false to avoid large universal APK
         }
     }
 }

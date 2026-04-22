@@ -27,6 +27,11 @@
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
+-keep class io.flutter.embedding.engine.deferredcomponents.** { *; }
+
+# Keep Google Play Core classes
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
 
 # Keep GoRouter classes
 -keep class com.example.grace_daily.** { *; }
@@ -34,3 +39,9 @@
 # Keep data classes
 -keep class **.models.** { *; }
 -keep class **.data.** { *; }
+
+# Keep serialization classes
+-keepclassmembers class * {
+    public static ** CREATOR;
+}
+
