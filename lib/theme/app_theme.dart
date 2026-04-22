@@ -13,9 +13,9 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: GdailyColors.primaryOlive, // Primary brand color
       onPrimary: Colors.white, // Color for text/icons placed on primary color
-      secondary: GdailyColors.secondaryGold, // Secondary accent color
+      secondary: GdailyColors.secondaryMuted, // Secondary accent color
       onSecondary: Colors.white, // Color for text/icons placed on secondary color
-      tertiary: GdailyColors.primaryLightOlive, // An additional accent color (example)
+      tertiary: GdailyColors.tertiaryGold, // An additional accent color
       onTertiary: GdailyColors.textDark,
 
       error: GdailyColors.errorRed, // Error indicator color
@@ -175,8 +175,8 @@ class AppTheme {
     ),
 
     // Splash Color for inkwell/button presses
-    splashColor: GdailyColors.primaryLightOlive.withOpacity(0.2),
-    highlightColor: GdailyColors.primaryLightOlive.withOpacity(0.1),
+    splashColor: GdailyColors.primaryOliveLight.withOpacity(0.2),
+    highlightColor: GdailyColors.primaryOliveLight.withOpacity(0.1),
 
     // Scrollbar Theme (if desired for consistent scrollbar appearance)
     scrollbarTheme: ScrollbarThemeData(

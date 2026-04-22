@@ -32,9 +32,22 @@ android {
 
     buildTypes {
         release {
+            // Disable code shrinking for now to avoid R8 issues
+            isMinifyEnabled = false
+            isShrinkResources = false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    // Split APKs by ABI for smaller downloads (Release only)
+    splits {
+        abi {
+            isEnable = false  // Disabled for debug builds to avoid conflicts
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = true
         }
     }
 }
