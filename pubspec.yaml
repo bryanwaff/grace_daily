@@ -67,6 +67,17 @@ flutter:
         - asset: assets/fonts/Newsreader-Regular.ttf
         - asset: assets/fonts/Newsreader-Italic.ttf
           style: italic
+        # Add bold Newsreader if available in the design system:
+        # - asset: assets/fonts/Newsreader-Bold.ttf
+        #   weight: 700
+
+    - family: Manrope # <--- Add this section for Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Regular.ttf
+        - asset: assets/fonts/Manrope-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:
