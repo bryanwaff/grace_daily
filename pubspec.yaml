@@ -18,6 +18,14 @@ dependencies:
   cached_network_image: ^3.3.1
   go_router: ^13.2.0
   provider: ^6.1.2
+  
+  # Database and local storage
+  sqflite: ^2.3.0
+  path: ^1.8.0
+  shared_preferences: ^2.2.0
+  
+  # HTTP and API communication
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
