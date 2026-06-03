@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "275002153704",
+    "project_id": "grace-daily-6f14c",
+    "storage_bucket": "grace-daily-6f14c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275002153704:android:618577f6b5d33169c4c75d",
+        "android_client_info": {
+          "package_name": "com.tumtu.grace_daily"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHifFLI1tilxP1n92V78aCDCSpoodEnUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
