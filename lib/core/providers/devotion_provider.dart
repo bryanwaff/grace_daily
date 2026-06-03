@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:grace_daily/core/models/verse.dart';
 import 'package:grace_daily/core/services/grace_daily_database.dart';
-import 'package:grace_daily/core/services/firebase_service.dart';
 
 /// Manages devotion data and verse availability.
 class DevotionProvider extends ChangeNotifier {
   final GraceDailyDatabase _db = GraceDailyDatabase();
-  final FirebaseService _firebase = FirebaseService();
   
   Verse? _currentVerse;
   List<Verse> _allVerses = [];
@@ -22,16 +20,16 @@ class DevotionProvider extends ChangeNotifier {
   String? get error => _error;
   List<Verse> get bookmarkedVerses => _allVerses.where((v) => v.isBookmarked).toList();
 
-  // Initialize and load devotions, actively syncing with Firebase Firestore
+  // Initialize and load devotions from Cloud Firestore
   Future<void> initializeDevotions() async {
     try {
       _isLoading = true;
       notifyListeners();
 
-      // 1. Load from local database first (Offline-first / Instant load)
+      // 1. Load from Cloud Firestore
       _allVerses = await _db.getAllVerses();
 
-      // 2. If local is empty, use bundled JSON assets first so the user gets immediate content
+      // 2. If empty in cloud, use bundled JSON assets first and seed them to the cloud
       if (_allVerses.isEmpty) {
         _allVerses = await _loadVersesFromAsset();
         await _db.insertVerses(_allVerses);
@@ -39,45 +37,13 @@ class DevotionProvider extends ChangeNotifier {
 
       _updateTodayVerse();
       _isLoading = false;
-      notifyListeners();
-
-      // 3. Fetch latest data from Firebase Firestore in background to refresh and update
-      _syncWithCloud();
       _error = null;
+      notifyListeners();
     } catch (e) {
       _error = 'Error loading devotions: $e';
       debugPrint(_error);
       _isLoading = false;
       notifyListeners();
-    }
-  }
-
-  /// Background-syncs verses from Cloud Firestore while preserving user bookmark states.
-  Future<void> _syncWithCloud() async {
-    try {
-      final cloudVerses = await _firebase.fetchVersesFromCloud();
-      if (cloudVerses.isNotEmpty) {
-        // Map of current local bookmark states to preserve them during cloud merge
-        final localVerses = await _db.getAllVerses();
-        final localBookmarkMap = {for (var v in localVerses) v.id: v.isBookmarked};
-
-        final syncedVerses = cloudVerses.map((cloudVerse) {
-          final wasBookmarked = localBookmarkMap[cloudVerse.id] ?? false;
-          return cloudVerse.copyWith(isBookmarked: wasBookmarked);
-        }).toList();
-
-        // Atomically replace all local verses with the fresh cloud data in a single transaction.
-        // This prevents race conditions where the table is temporarily empty during a sync.
-        await _db.replaceVerses(syncedVerses);
-        
-        // Refresh local memory and UI
-        _allVerses = await _db.getAllVerses();
-        _updateTodayVerse();
-        notifyListeners();
-        debugPrint('Successfully synced and cached ${cloudVerses.length} devotions from Cloud Firestore.');
-      }
-    } catch (e) {
-      debugPrint('Cloud Firestore devotion sync skipped/failed: $e');
     }
   }
 

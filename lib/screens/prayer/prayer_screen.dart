@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:grace_daily/core/providers/devotion_provider.dart';
 import 'package:grace_daily/core/providers/journal_provider.dart';
 import 'package:grace_daily/core/providers/user_progress_provider.dart';
+import 'package:grace_daily/core/providers/community_provider.dart';
 import 'package:grace_daily/core/widgets/bottom_nav_bar.dart';
 import 'package:grace_daily/theme/gdaily_colors.dart';
 
@@ -19,6 +20,7 @@ class PrayerScreen extends StatefulWidget {
 class _PrayerScreenState extends State<PrayerScreen> {
   final TextEditingController _reflectionController = TextEditingController();
   bool _marked = false;
+  bool _shareToCommunity = false;
 
   @override
   void dispose() {
@@ -176,6 +178,28 @@ class _PrayerScreenState extends State<PrayerScreen> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _shareToCommunity,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _shareToCommunity = value ?? false;
+                                  });
+                                },
+                                activeColor: theme.colorScheme.primary,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Share anonymously with the community',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           const SizedBox(height: 24),
 
                           // --- Ambient Sound Block ---
@@ -259,15 +283,26 @@ class _PrayerScreenState extends State<PrayerScreen> {
   void _saveJournal(BuildContext context, int verseId) {
     final theme = Theme.of(context);
     final journalProvider = context.read<JournalProvider>();
+    final communityProvider = context.read<CommunityProvider>();
+    
     if (_reflectionController.text.trim().isNotEmpty) {
+      final content = _reflectionController.text.trim();
+      
       journalProvider.saveEntry(
         verseId,
-        _reflectionController.text,
+        content,
         isPrayed: _marked,
       );
+
+      if (_shareToCommunity) {
+        communityProvider.shareReflection(verseId, content, 'Anonymous Soul');
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('📖 Your reflection has been saved!'),
+          content: Text(_shareToCommunity 
+            ? '📖 Reflection saved and shared with community!' 
+            : '📖 Your reflection has been saved!'),
           backgroundColor: theme.colorScheme.primary,
           duration: const Duration(seconds: 2),
         ),

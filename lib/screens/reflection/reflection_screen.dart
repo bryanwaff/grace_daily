@@ -5,12 +5,29 @@ import 'package:grace_daily/core/providers/devotion_provider.dart';
 import 'package:grace_daily/core/services/share_service.dart';
 import 'package:grace_daily/core/utils/image_strings.dart';
 import 'package:grace_daily/core/widgets/bottom_nav_bar.dart';
-import 'package:grace_daily/theme/gdaily_colors.dart';
+import 'package:grace_daily/core/providers/community_provider.dart';
+import 'package:grace_daily/core/providers/community_provider.dart';
 
 /// The reflection screen displays daily devotion content including
 /// the verse, meditation text, and thought for the day.
-class ReflectionScreen extends StatelessWidget {
+class ReflectionScreen extends StatefulWidget {
   const ReflectionScreen({super.key});
+
+  @override
+  State<ReflectionScreen> createState() => _ReflectionScreenState();
+}
+
+class _ReflectionScreenState extends State<ReflectionScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final devotionProvider = context.read<DevotionProvider>();
+      if (devotionProvider.currentVerse != null) {
+        context.read<CommunityProvider>().loadReflections(devotionProvider.currentVerse!.id);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +234,9 @@ class ReflectionScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 32),
+                        // --- Community Reflections Section ---
+                        const CommunityReflectionsSection(),
+                        const SizedBox(height: 32),
                         // --- Button Section ---
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -265,5 +285,108 @@ class ReflectionScreen extends StatelessWidget {
   int _getDayOfYear() {
     final now = DateTime.now();
     return now.difference(DateTime(now.year, 1, 1)).inDays + 1;
+  }
+}
+
+class CommunityReflectionsSection extends StatelessWidget {
+  const CommunityReflectionsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Consumer<CommunityProvider>(
+      builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.reflections.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Text(
+                'Community Reflections',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 180,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                itemCount: provider.reflections.length,
+                itemBuilder: (context, index) {
+                  final reflection = provider.reflections[index];
+                  return Container(
+                    width: 280,
+                    margin: const EdgeInsets.only(right: 16, bottom: 8),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.cardTheme.color,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: theme.colorScheme.outline),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '"${reflection.content}"',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontFamily: 'Newsreader',
+                              fontStyle: FontStyle.italic,
+                              height: 1.5,
+                            ),
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '- ${reflection.author}',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              reflection.getFormattedDate(),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontSize: 9,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

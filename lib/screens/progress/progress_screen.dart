@@ -5,12 +5,27 @@ import 'package:grace_daily/core/providers/user_progress_provider.dart';
 import 'package:grace_daily/core/providers/journal_provider.dart';
 import 'package:grace_daily/core/services/notification_service.dart';
 import 'package:grace_daily/core/services/firebase_service.dart';
+import 'package:grace_daily/core/services/share_service.dart';
 import 'package:grace_daily/core/providers/devotion_provider.dart';
+import 'package:grace_daily/core/providers/community_provider.dart';
 import 'package:grace_daily/theme/gdaily_colors.dart';
 
 /// Screen displaying user's progress, streaks, and completion history.
-class ProgressScreen extends StatelessWidget {
+class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
+
+  @override
+  State<ProgressScreen> createState() => _ProgressScreenState();
+}
+
+class _ProgressScreenState extends State<ProgressScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CommunityProvider>().loadLeaderboard();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +77,9 @@ class ProgressScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       // Cloud Setup (One-time)
                       const _CloudSetupCard(),
+                      const SizedBox(height: 24),
+                      // Leaderboard
+                      const _AnonymousLeaderboard(),
                       const SizedBox(height: 24),
                       // Recent entries
                       const _RecentEntriesSection(),
@@ -192,6 +210,39 @@ class _StreakCardState extends State<_StreakCard> with SingleTickerProviderState
                     fontStyle: FontStyle.italic,
                   ),
                 ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => ShareService.shareProgress(
+                      progressProvider.currentStreak,
+                      progressProvider.totalCompletions,
+                    ),
+                    icon: const Icon(Icons.share_rounded, size: 18),
+                    label: const Text('Share My Journey'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: theme.colorScheme.primary,
+                      side: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.5)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    onPressed: () => ShareService.shareVerse(
+                      context.read<DevotionProvider>().currentVerse!
+                    ),
+                    icon: const Icon(Icons.group_add_outlined, size: 18),
+                    label: const Text('Invite a Friend to Devotion'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -245,20 +296,27 @@ class _StatisticsGrid extends StatelessWidget {
               children: [
                 Expanded(
                   child: _StatCard(
-                    label: 'Days Since Joined',
-                    value: progressProvider.daysSinceJoined.toString(),
-                    icon: Icons.calendar_today_rounded,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
                     label: 'Month Completion',
                     value: '${(progressProvider.monthCompletionPercentage * 100).toStringAsFixed(0)}%',
                     icon: Icons.assessment_rounded,
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _StatCard(
+                    label: 'Days Since Joined',
+                    value: progressProvider.daysSinceJoined.toString(),
+                    icon: Icons.calendar_today_rounded,
+                  ),
+                ),
               ],
+            ),
+            const SizedBox(height: 12),
+            _StatCard(
+              label: 'Global Prayer Community',
+              value: '${progressProvider.globalPrayerCount} hearts praying together',
+              icon: Icons.public_rounded,
+              isWide: true,
             ),
           ],
         );
@@ -272,11 +330,13 @@ class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
+  final bool isWide;
 
   const _StatCard({
     required this.label,
     required this.value,
     required this.icon,
+    this.isWide = false,
   });
 
   @override
@@ -284,6 +344,7 @@ class _StatCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
+      width: isWide ? double.infinity : null,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
@@ -502,7 +563,7 @@ class _NotificationSettingsCard extends StatelessWidget {
                   Switch.adaptive(
                     value: enabled,
                     activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.5),
-                    activeColor: theme.colorScheme.primary,
+                    activeThumbColor: theme.colorScheme.primary,
                     onChanged: (val) {
                       progressProvider.updateNotificationSettings(
                         val,
@@ -669,17 +730,15 @@ class _CloudSetupCardState extends State<_CloudSetupCard> {
                         // 2. Initialize global stats
                         await firebaseService.initializeGlobalStats();
 
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('✅ Cloud collections initialized successfully!')),
-                          );
-                        }
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('✅ Cloud collections initialized successfully!')),
+                        );
                       } catch (e) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('❌ Error: $e')),
-                          );
-                        }
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('❌ Error: $e')),
+                        );
                       } finally {
                         if (mounted) setState(() => _isSeeding = false);
                       }
@@ -696,6 +755,127 @@ class _CloudSetupCardState extends State<_CloudSetupCard> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AnonymousLeaderboard extends StatelessWidget {
+  const _AnonymousLeaderboard();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Consumer<CommunityProvider>(
+      builder: (context, provider, child) {
+        if (provider.leaderboard.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: theme.cardTheme.color,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.colorScheme.outline),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.emoji_events_outlined,
+                    color: theme.colorScheme.primary,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Community Leaderboard',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: provider.leaderboard.length,
+                separatorBuilder: (context, index) => const Divider(height: 1),
+                itemBuilder: (context, index) {
+                  final entry = provider.leaderboard[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: index < 3 
+                              ? theme.colorScheme.primary 
+                              : theme.colorScheme.outline,
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${index + 1}',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: index < 3 ? Colors.white : theme.colorScheme.onSurface,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            entry['name'],
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: index < 3 ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${entry['streak']} day streak',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${entry['total']} total',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontSize: 9,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: Text(
+                  'Celebrating each soul\'s consistency in grace.',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

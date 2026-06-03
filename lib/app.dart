@@ -5,6 +5,7 @@ import 'package:grace_daily/theme/app_theme.dart'; // Our global theme
 import 'package:grace_daily/core/providers/devotion_provider.dart';
 import 'package:grace_daily/core/providers/journal_provider.dart';
 import 'package:grace_daily/core/providers/user_progress_provider.dart';
+import 'package:grace_daily/core/providers/community_provider.dart';
 
 class GraceDailyApp extends StatelessWidget {
   const GraceDailyApp({super.key});
@@ -22,6 +23,9 @@ class GraceDailyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserProgressProvider>(
           create: (_) => UserProgressProvider()..initializeProgress(),
+        ),
+        ChangeNotifierProvider<CommunityProvider>(
+          create: (_) => CommunityProvider(),
         ),
       ],
       child: MaterialApp.router(

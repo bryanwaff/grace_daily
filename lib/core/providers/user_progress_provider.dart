@@ -36,8 +36,6 @@ class UserProgressProvider extends ChangeNotifier {
       _progress = await _db.getUserProgress();
       _progress ??= UserProgress();
 
-      // Background sync with cloud
-      _syncWithCloud();
       _fetchGlobalStats();
 
       _error = null;
@@ -47,12 +45,6 @@ class UserProgressProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
-    }
-  }
-
-  Future<void> _syncWithCloud() async {
-    if (_progress != null) {
-      await _firebase.syncUserProgress(_progress!);
     }
   }
 
@@ -75,12 +67,6 @@ class UserProgressProvider extends ChangeNotifier {
         
         // Notify listeners immediately so the UI reflects completion instantly
         notifyListeners();
-
-        // Push to cloud in the background so that network latency/offline state
-        // doesn't block the UI transition or make the app feel frozen.
-        _firebase.syncUserProgress(_progress!).catchError((e) {
-          debugPrint('Error syncing progress to cloud: $e');
-        });
 
         // Trigger streak milestone notification in the background
         if (_progress!.notificationsEnabled) {
@@ -111,11 +97,6 @@ class UserProgressProvider extends ChangeNotifier {
       
       // Notify listeners immediately
       notifyListeners();
-
-      // Push to cloud in the background
-      _firebase.syncUserProgress(_progress!).catchError((e) {
-        debugPrint('Error syncing reset streak: $e');
-      });
     } catch (e) {
       _error = 'Error resetting streak: $e';
       debugPrint(_error);
@@ -190,11 +171,6 @@ class UserProgressProvider extends ChangeNotifier {
       
       // Notify listeners immediately
       notifyListeners();
-
-      // Sync settings in the background
-      _firebase.syncUserProgress(_progress!).catchError((e) {
-        debugPrint('Error syncing notification settings: $e');
-      });
 
       if (enabled) {
         NotificationService.requestPermissions().then((_) {

@@ -39,4 +39,19 @@ ${entry.isPrayed ? '🙏 Prayed today!' : ''}
     // ignore: deprecated_member_use
     await Share.share(text, subject: 'My Reflection - Grace Daily');
   }
+
+  /// Share user's journey and streaks.
+  static Future<void> shareProgress(int streak, int total) async {
+    final text = '''
+✨ My Spiritual Journey on Grace Daily ✨
+
+I've reached a $streak-day devotion streak! 
+Total devotions completed: $total
+
+Walking in grace, one day at a time. 🙏✨
+#GraceDaily #Devotion #Faith
+''';
+    // ignore: deprecated_member_use
+    await Share.share(text, subject: 'My Grace Daily Progress');
+  }
 }
