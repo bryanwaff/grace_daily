@@ -1,58 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grace_daily/screens/bookmarks/bookmarks_screen.dart';
 import 'package:grace_daily/screens/home/home_screen.dart';
 import 'package:grace_daily/screens/reflection/reflection_screen.dart';
 import 'package:grace_daily/screens/prayer/prayer_screen.dart';
 import 'package:grace_daily/screens/success/prayer_complete_screen.dart';
+import 'package:grace_daily/screens/progress/progress_screen.dart';
 
-/// Manages all application routes using GoRouter.
+/// Manages all application routes using GoRouter with custom transitions.
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/home', // The application starts on the Home screen
-    debugLogDiagnostics: true, // Good for development to see route changes
+    initialLocation: '/home',
+    debugLogDiagnostics: true,
 
     routes: <RouteBase>[
-      // The base /home route, representing the Daily Verse screen
       GoRoute(
         path: '/home',
-        name: 'home', // Named route for easier navigation
-        builder: (BuildContext context, GoRouterState state) {
-          return const HomeScreen();
-        },
-        // Nested routes for the daily flow: Reflection, Prayer, Success
+        name: 'home',
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: HomeScreen(),
+        ),
         routes: <RouteBase>[
           GoRoute(
-            path: 'reflection', // Full path: /home/reflection
+            path: 'reflection',
             name: 'reflection',
-            builder: (BuildContext context, GoRouterState state) {
-              return const ReflectionScreen();
-            },
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const ReflectionScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+                  child: child,
+                );
+              },
+            ),
           ),
           GoRoute(
-            path: 'prayer', // Full path: /home/prayer
+            path: 'prayer',
             name: 'prayer',
-            builder: (BuildContext context, GoRouterState state) {
-              return const PrayerScreen();
-            },
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const PrayerScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+                  child: child,
+                );
+              },
+            ),
           ),
           GoRoute(
-            path: 'success', // Full path: /home/success
+            path: 'success',
             name: 'success',
-            builder: (BuildContext context, GoRouterState state) {
-              return const PrayerCompleteScreen();
-            },
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const PrayerCompleteScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return ScaleTransition(
+                  scale: CurveTween(curve: Curves.elasticOut).animate(animation),
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          ),
+          GoRoute(
+            path: 'progress',
+            name: 'progress',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const ProgressScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.1),
+                    end: Offset.zero,
+                  ).animate(CurveTween(curve: Curves.easeOut).animate(animation)),
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          ),
+          GoRoute(
+            path: 'bookmarks',
+            name: 'bookmarks',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const BookmarksScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(CurveTween(curve: Curves.easeOutCubic).animate(animation)),
+                  child: child,
+                );
+              },
+            ),
           ),
         ],
       ),
-      // --- Example of other top-level routes (if needed in the future) ---
-      // GoRoute(
-      //   path: '/settings',
-      //   name: 'settings',
-      //   builder: (BuildContext context, GoRouterState state) => const SettingsScreen(),
-      // ),
     ],
 
-    // Optional: A custom error page for paths that don't match any route
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(title: const Text('Error')),
       body: Center(

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Sun Rays / Lightburst -->
+    <path
+        android:fillColor="#F3D596"
+        android:pathData="M54,22 L54,14 M42,25 L37,19 M66,25 L71,19 M33,32 L26,29 M75,32 L82,29"
+        android:strokeColor="#F3D596"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+
+    <!-- Rising Sun -->
+    <path
+        android:fillColor="#E2B05C"
+        android:pathData="M38,36 C38,27.16 45.16,20 54,20 C62.84,20 70,27.16 70,36 Z" />
+
+    <!-- Open Book / Pages -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,68 C44,60 28,62 24,65 L24,80 C28,77 44,75 54,82 C64,75 80,77 84,80 L84,65 C80,62 64,60 54,68 Z" />
+    <path
+        android:fillColor="#E2B05C"
+        android:pathData="M54,82 L54,68"
+        android:strokeColor="#E2B05C"
+        android:strokeWidth="1.5"/>
+
+    <!-- Grace Dove & Olive Branch -->
+    <g android:translateX="2" android:translateY="-2">
+        <!-- Olive Branch -->
+        <path
+            android:fillColor="#F3D596"
+            android:pathData="M66,38 C68,35 72,34 75,33 C73,36 70,39 67,40 Z M68,34 C69,31 72,30 74,30 C73,32 71,34 69,35 Z" />
+        <!-- Dove Body & Wings -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M42,32 C38,38 36,46 42,52 C45,55 50,54 54,51 C58,48 64,42 66,37 C61,39 57,41 54,40 C50,39 44,30 42,32 Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M46,45 C41,48 34,55 36,66 C39,63 44,58 47,53 Z" />
+    </g>
+</vector>

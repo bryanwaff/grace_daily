@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grace_daily/theme/gdaily_colors.dart';
-import 'package:grace_daily/theme/gdaily_typography.dart';
 
 /// Reusable bottom navigation bar for all screens
 class BottomNavBar extends StatelessWidget {
@@ -14,15 +13,18 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final navBgColor = theme.cardTheme.color?.withValues(alpha: 0.9) ?? Colors.white.withValues(alpha: 0.9);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12, left: 12, right: 12, top: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
+          color: navBgColor,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
+              color: theme.brightness == Brightness.dark ? Colors.black38 : Colors.black12,
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -50,6 +52,12 @@ class BottomNavBar extends StatelessWidget {
               selected: currentRoute == 'prayer',
               onTap: () => context.go('/home/prayer'),
             ),
+            _NavTab(
+              icon: Icons.trending_up_rounded,
+              label: 'Progress',
+              selected: currentRoute == 'progress',
+              onTap: () => context.go('/home/progress'),
+            ),
           ],
         ),
       ),
@@ -72,6 +80,10 @@ class _NavTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeColor = theme.colorScheme.primary;
+    final inactiveColor = theme.textTheme.bodySmall?.color ?? GdailyColors.textMedium;
+
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -79,7 +91,7 @@ class _NavTab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
           decoration: selected
               ? BoxDecoration(
-                  color: GdailyColors.primaryOlive.withValues(alpha: 0.15),
+                  color: activeColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(16),
                 )
               : null,
@@ -88,18 +100,14 @@ class _NavTab extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: selected
-                    ? GdailyColors.primaryOlive
-                    : GdailyColors.textMedium,
+                color: selected ? activeColor : inactiveColor,
                 size: 24,
               ),
               const SizedBox(height: 2),
               Text(
                 label,
-                style: GdailyTypography.lightTextTheme.labelMedium?.copyWith(
-                  color: selected
-                      ? GdailyColors.primaryOlive
-                      : GdailyColors.textMedium,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: selected ? activeColor : inactiveColor,
                   fontWeight: selected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SacredTheme {
-  static const Color primaryOlive = Color(0xFF8F9779);
-  static const Color deepOlive = Color(0xFF54652E);
+  static const Color primaryOlive = Color(0xFFEA638C);
+  static const Color deepOlive = Color(0xFFF321B8);
   static const Color backgroundCream = Color(0xFFF9F8F4);
 
   static ThemeData get lightTheme {

@@ -194,28 +194,169 @@ class AppTheme {
     ),
   );
 
-// --- Dark Theme Configuration (Optional, for future implementation) ---
-// If the Lumen Grace design system includes specific styling for a dark mode,
-// define a separate 'darkTheme' here.
-// static ThemeData darkTheme = ThemeData(
-//   brightness: Brightness.dark,
-//   colorScheme: const ColorScheme.dark(
-//     primary: GdailyColors.primaryDarkOlive,
-//     onPrimary: Colors.white,
-//     secondary: GdailyColors.secondaryDarkGold,
-//     onSecondary: Colors.white,
-//     error: GdailyColors.errorRed,
-//     onError: Colors.white,
-//     background: GdailyColors.backgroundDark,
-//     onBackground: Colors.white,
-//     surface: GdailyColors.backgroundDark,
-//     onSurface: Colors.white,
-//     surfaceVariant: GdailyColors.textMedium, // Lighter variant for dark mode
-//     onSurfaceVariant: GdailyColors.textLight,
-//     outline: GdailyColors.textMedium,
-//   ),
-//   scaffoldBackgroundColor: GdailyColors.backgroundDark,
-//   textTheme: GdailyTypography.darkTextTheme, // Assuming a darkTextTheme exists
-//   // ... apply dark mode specific shapes and other properties
-// );
+  // --- Dark Theme Configuration ---
+  static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+
+    colorScheme: const ColorScheme.dark(
+      primary: Color(0xFF8FA05C), // Lighter olive for dark mode contrast
+      onPrimary: Colors.white,
+      secondary: GdailyColors.secondaryMutedLight,
+      onSecondary: Colors.white,
+      tertiary: GdailyColors.tertiaryGoldLight,
+      onTertiary: Colors.black,
+
+      error: GdailyColors.errorRed,
+      onError: Colors.white,
+
+      background: Color(0xFF121212),
+      onBackground: Colors.white,
+
+      surface: Color(0xFF1E1E1E), // Elevate surface in dark mode
+      onSurface: Colors.white,
+
+      surfaceVariant: Color(0xFF2C2C2C),
+      onSurfaceVariant: Color(0xFFE0E0E0),
+      outline: Color(0xFF3C3C3C),
+      shadow: Colors.black38,
+    ),
+
+    primaryColor: const Color(0xFF8FA05C),
+    scaffoldBackgroundColor: const Color(0xFF121212),
+
+    textTheme: GdailyTypography.darkTextTheme,
+
+    cardTheme: CardThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      elevation: 2,
+      color: const Color(0xFF1E1E1E),
+      margin: const EdgeInsets.all(8.0),
+    ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        backgroundColor: GdailyColors.primaryOlive, // Maintain primary button brand color
+        foregroundColor: Colors.white,
+        textStyle: GdailyTypography.darkTextTheme.labelLarge?.copyWith(
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        elevation: 2,
+        minimumSize: const Size(double.infinity, 48),
+      ),
+    ),
+
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        side: const BorderSide(color: Color(0xFF8FA05C), width: 1.5),
+        foregroundColor: const Color(0xFF8FA05C),
+        textStyle: GdailyTypography.darkTextTheme.labelLarge,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        minimumSize: const Size(double.infinity, 48),
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF8FA05C),
+        textStyle: GdailyTypography.darkTextTheme.labelLarge,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+    ),
+
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color(0xFF3C3C3C)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color(0xFF8FA05C), width: 2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color(0xFF3C3C3C), width: 1),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: GdailyColors.errorRed, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: GdailyColors.errorRed, width: 2),
+      ),
+      fillColor: const Color(0xFF1E1E1E),
+      filled: true,
+      hintStyle: GdailyTypography.darkTextTheme.bodyMedium?.copyWith(
+        color: const Color(0xFFAAAAAA),
+      ),
+      labelStyle: GdailyTypography.darkTextTheme.bodyMedium,
+      errorStyle: GdailyTypography.darkTextTheme.bodySmall?.copyWith(color: GdailyColors.errorRed),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
+    ),
+
+    appBarTheme: AppBarTheme(
+      backgroundColor: const Color(0xFF121212),
+      foregroundColor: Colors.white,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: GdailyTypography.darkTextTheme.titleLarge?.copyWith(
+        color: Colors.white,
+        fontSize: 20,
+      ),
+      iconTheme: const IconThemeData(color: Colors.white),
+      actionsIconTheme: const IconThemeData(color: Colors.white),
+    ),
+
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      backgroundColor: const Color(0xFF1E1E1E),
+      titleTextStyle: GdailyTypography.darkTextTheme.titleMedium?.copyWith(color: Colors.white),
+      contentTextStyle: GdailyTypography.darkTextTheme.bodyMedium?.copyWith(color: const Color(0xFFE0E0E0)),
+    ),
+
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: GdailyColors.primaryOlive,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 4,
+    ),
+
+    dividerTheme: const DividerThemeData(
+      color: Color(0xFF3C3C3C),
+      thickness: 1,
+      space: 1,
+      indent: 16,
+      endIndent: 16,
+    ),
+
+    splashColor: const Color(0xFF8FA05C).withOpacity(0.2),
+    highlightColor: const Color(0xFF8FA05C).withOpacity(0.1),
+
+    scrollbarTheme: ScrollbarThemeData(
+      thumbVisibility: MaterialStateProperty.all(true),
+      thickness: MaterialStateProperty.all(4.0),
+      radius: const Radius.circular(10),
+      thumbColor: MaterialStateProperty.all(const Color(0xFF8FA05C).withOpacity(0.7)),
+      minThumbLength: 50.0,
+    ),
+
+    iconTheme: const IconThemeData(
+      color: Colors.white,
+      size: 24.0,
+    ),
+  );
 }

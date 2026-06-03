@@ -119,18 +119,107 @@ class GdailyTypography {
     ),
   );
 
-// --- Dark Text Theme (Optional, for future implementation) ---
-// If the Lumen Grace design system includes specific typography for a dark mode,
-// define a separate 'darkTextTheme' here. This would typically involve:
-// - Using GdailyColors.textLight or Colors.white for text color.
-// - Potentially adjusting weights or sizes if the design system specifies it.
-// static TextTheme darkTextTheme = TextTheme(
-//   displayLarge: const TextStyle(
-//     fontFamily: _newsreader,
-//     fontSize: 57,
-//     fontWeight: FontWeight.bold,
-//     color: GdailyColors.textLight, // Lighter text color for dark mode
-//   ),
-//   // ... define all other text styles for dark mode
-// );
+  // --- Dark Text Theme Configuration ---
+  static TextTheme darkTextTheme = TextTheme(
+    displayLarge: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 57,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    displayMedium: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 45,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    displaySmall: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 36,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+
+    headlineLarge: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 32,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    headlineMedium: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 28,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    headlineSmall: const TextStyle(
+      fontFamily: _newsreader,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+
+    titleLarge: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 22,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    titleMedium: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 18,
+      fontWeight: FontWeight.w600,
+      color: Colors.white,
+    ),
+    titleSmall: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,
+    ),
+
+    bodyLarge: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 16,
+      fontWeight: FontWeight.normal,
+      color: Colors.white,
+      height: 1.5,
+    ),
+    bodyMedium: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 14,
+      fontWeight: FontWeight.normal,
+      color: Color(0xFFE0E0E0),
+      height: 1.4,
+    ),
+    bodySmall: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+      color: Color(0xFFAAAAAA),
+      height: 1.3,
+    ),
+
+    labelLarge: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 0.5,
+      color: Colors.white,
+    ),
+    labelMedium: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.4,
+      color: Colors.white,
+    ),
+    labelSmall: const TextStyle(
+      fontFamily: _manrope,
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.5,
+      color: Color(0xFFAAAAAA),
+    ),
+  );
 }

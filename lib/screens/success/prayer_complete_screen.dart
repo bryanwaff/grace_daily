@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grace_daily/core/widgets/bottom_nav_bar.dart';
-import 'package:grace_daily/theme/gdaily_colors.dart';
-import 'package:grace_daily/theme/gdaily_typography.dart';
 
 /// The prayer complete screen shows a success message and allows users
 /// to return to the home screen or view their completed routine.
@@ -11,8 +9,10 @@ class PrayerCompleteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: GdailyColors.neutralLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -29,13 +29,13 @@ class PrayerCompleteScreen extends StatelessWidget {
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: GdailyColors.primaryOlive.withValues(alpha: 0.1),
+                          color: theme.colorScheme.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.check_circle,
                           size: 60,
-                          color: GdailyColors.primaryOlive,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
 
@@ -44,8 +44,8 @@ class PrayerCompleteScreen extends StatelessWidget {
                       // Success message
                       Text(
                         'Well Done!',
-                        style: GdailyTypography.lightTextTheme.displaySmall?.copyWith(
-                          color: GdailyColors.primaryOlive,
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          color: theme.colorScheme.primary,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -54,7 +54,7 @@ class PrayerCompleteScreen extends StatelessWidget {
 
                       Text(
                         'You have completed your daily grace routine.',
-                        style: GdailyTypography.lightTextTheme.headlineSmall,
+                        style: theme.textTheme.headlineSmall,
                         textAlign: TextAlign.center,
                       ),
 
@@ -66,13 +66,14 @@ class PrayerCompleteScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
+                        color: theme.cardTheme.color,
                         child: Padding(
                           padding: const EdgeInsets.all(24.0),
                           child: Column(
                             children: [
                               Text(
                                 '"The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you; the Lord turn his face toward you and give you peace."',
-                                style: GdailyTypography.lightTextTheme.bodyLarge?.copyWith(
+                                style: theme.textTheme.bodyLarge?.copyWith(
                                   height: 1.6,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -81,8 +82,8 @@ class PrayerCompleteScreen extends StatelessWidget {
                               const SizedBox(height: 16),
                               Text(
                                 'Numbers 6:24-26',
-                                style: GdailyTypography.lightTextTheme.titleSmall?.copyWith(
-                                  color: GdailyColors.primaryOlive,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  color: theme.colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
@@ -101,6 +102,7 @@ class PrayerCompleteScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => context.go('/home'),
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.colorScheme.primary,
                               minimumSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -108,7 +110,7 @@ class PrayerCompleteScreen extends StatelessWidget {
                             ),
                             child: Text(
                               'Return Home',
-                              style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
+                              style: theme.textTheme.labelLarge?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
@@ -118,10 +120,11 @@ class PrayerCompleteScreen extends StatelessWidget {
 
                           OutlinedButton(
                             onPressed: () {
-                              // TODO: Navigate to history/progress screen when implemented
-                              context.go('/home');
+                              context.go('/home/progress');
                             },
                             style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: theme.colorScheme.primary, width: 1.5),
+                              foregroundColor: theme.colorScheme.primary,
                               minimumSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -129,8 +132,8 @@ class PrayerCompleteScreen extends StatelessWidget {
                             ),
                             child: Text(
                               'View Progress',
-                              style: GdailyTypography.lightTextTheme.labelLarge?.copyWith(
-                                color: GdailyColors.primaryOlive,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: theme.colorScheme.primary,
                               ),
                             ),
                           ),
