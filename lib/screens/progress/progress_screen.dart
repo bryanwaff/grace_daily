@@ -725,14 +725,14 @@ class _CloudSetupCardState extends State<_CloudSetupCard> {
                   : () async {
                       setState(() => _isSeeding = true);
                       try {
-                        // 1. Seed the 365 verses
-                        await firebaseService.seedVerses(devotionProvider.allVerses);
+                        // 1. Force sync local JSON to Firestore
+                        await devotionProvider.forceSyncLibraryToCloud();
                         // 2. Initialize global stats
                         await firebaseService.initializeGlobalStats();
 
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('✅ Cloud collections initialized successfully!')),
+                          const SnackBar(content: Text('✅ Cloud library updated from local JSON!')),
                         );
                       } catch (e) {
                         if (!mounted) return;

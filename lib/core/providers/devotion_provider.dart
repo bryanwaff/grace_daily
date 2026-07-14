@@ -47,14 +47,61 @@ class DevotionProvider extends ChangeNotifier {
     }
   }
 
-  void _updateTodayVerse() {
-    if (_allVerses.isEmpty) return;
-    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays + 1;
-    final verseIndex = (dayOfYear - 1) % _allVerses.length;
-    _currentVerse = _allVerses[verseIndex];
+  /// Forces the local JSON library to overwrite the Cloud Firestore library.
+  /// Use this only when updating the master verse list.
+  Future<void> forceSyncLibraryToCloud() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      // 1. Load fresh from JSON
+      final localVerses = await _loadVersesFromAsset();
+      
+      // 2. Clear local Firestore cache so we don't see old data locally
+      await _db.clearCache();
+      
+      // 3. Push to Cloud (overwriting by ID)
+      await _db.insertVerses(localVerses);
+      
+      // 4. Reload local state
+      _allVerses = await _db.getAllVerses();
+      
+      _updateTodayVerse();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to sync library: $e';
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  // Helper to load 365 verses by cycling the beautifully curated JSON database
+  void _updateTodayVerse() {
+    if (_allVerses.isEmpty) return;
+    
+    // Calculate current day of the year (1-366)
+    final now = DateTime.now();
+    final startOfYear = DateTime(now.year, 1, 1);
+    final dayOfYear = now.difference(startOfYear).inDays + 1;
+    
+    // Explicitly find by ID to ensure consistency between JSON and Cloud
+    try {
+      _currentVerse = _allVerses.firstWhere(
+        (v) => v.id == dayOfYear,
+        orElse: () {
+          // Fallback logic if current day ID isn't found
+          // Cycle through available verses as a backup
+          final index = (dayOfYear - 1) % _allVerses.length;
+          return _allVerses[index];
+        },
+      );
+    } catch (e) {
+      if (_allVerses.isNotEmpty) _currentVerse = _allVerses.first;
+    }
+  }
+
+  // Helper to load verses directly from the JSON asset
   Future<List<Verse>> _loadVersesFromAsset() async {
     try {
       final jsonString = await rootBundle.loadString('assets/verses/verses_365.json');
@@ -63,26 +110,28 @@ class DevotionProvider extends ChangeNotifier {
       
       final loadedVerses = <Verse>[];
       
-      for (int i = 0; i < 365; i++) {
-        final data = versesList[i % versesList.length] as Map<String, dynamic>;
+      for (var data in versesList) {
+        final map = data as Map<String, dynamic>;
         loadedVerses.add(
           Verse(
-            id: i + 1,
-            text: data['text'] as String,
-            reference: data['reference'] as String,
-            title: data['title'] as String,
-            reflection: data['reflection'] as String,
-            quote: data['quote'] as String,
-            thoughtForTheDay: data['thoughtForTheDay'] as String,
-            dailyIntention: data['dailyIntention'] as String,
-            prayerText: data['prayerText'] as String,
+            id: map['id'] as int,
+            text: map['text'] as String,
+            reference: map['reference'] as String,
+            title: map['title'] as String,
+            reflection: map['reflection'] as String,
+            thoughtForTheDay: map['thoughtForTheDay'] as String,
+            dailyIntention: map['dailyIntention'] as String,
+            prayerText: map['prayerText'] as String,
             isBookmarked: false,
           ),
         );
       }
+
+      // If the list is shorter than 365, we can fill the rest or just leave it.
+      // For now, we trust the JSON to be the master list.
       return loadedVerses;
     } catch (e) {
-      debugPrint('Error loading verses from JSON: $e. Falling back to simple generation.');
+      debugPrint('Error loading verses from JSON: $e. Falling back to mock generation.');
       return _generateMockVerses();
     }
   }
@@ -115,38 +164,17 @@ class DevotionProvider extends ChangeNotifier {
     }
   }
 
-  // Generate fallback mock verses
+  // Generate fallback mock verses only if both Cloud and JSON fail
   List<Verse> _generateMockVerses() {
-    final mockData = [
-      {
-        'text': '"For I know the plans I have for you," declares the LORD,\n"plans to prosper you and not to harm you,\nplans to give you hope and a future."',
-        'reference': 'Jeremiah 29:11',
-        'title': 'God\'s Perfect Plan',
-        'reflection': 'In the quiet moments of reflection, we often struggle with uncertainty about our future. Yet the promise in Jeremiah offers profound peace: God has a purpose for each of us.',
-        'quote': '"When you cannot see the path forward, trust that you are exactly where you need to be."',
-        'thoughtForTheDay': 'Take time today to reflect on how God has guided you through difficult times. His plans are always working for your good.',
-        'dailyIntention': 'Finding Purpose',
-        'prayerText': '"Lord, help me trust in Your plans for my life, even when I cannot see the path ahead. Grant me peace in knowing that You are guiding me toward a future filled with hope."'
-      }
-    ];
-
-    final verses = <Verse>[];
-    for (int i = 0; i < 365; i++) {
-      final data = mockData[i % mockData.length];
-      verses.add(
-        Verse(
-          id: i + 1,
-          text: data['text'] as String,
-          reference: data['reference'] as String,
-          title: data['title'] as String,
-          reflection: data['reflection'] as String,
-          quote: data['quote'] as String,
-          thoughtForTheDay: data['thoughtForTheDay'] as String,
-          dailyIntention: data['dailyIntention'] as String,
-          prayerText: data['prayerText'] as String,
-        ),
-      );
-    }
-    return verses;
+    return List.generate(365, (i) => Verse(
+      id: i + 1,
+      text: "Verse for Day ${i + 1}",
+      reference: "Reference ${i + 1}",
+      title: "Title for Day ${i + 1}",
+      reflection: "Meditation for Day ${i + 1}",
+      thoughtForTheDay: "Thought for Day ${i + 1}",
+      dailyIntention: "Intention for Day ${i + 1}",
+      prayerText: "Prayer for Day ${i + 1}",
+    ));
   }
 }

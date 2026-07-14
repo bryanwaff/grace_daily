@@ -142,7 +142,27 @@ class _PrayerScreenState extends State<PrayerScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 12),
+
+                          // --- Join Counter ---
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.people_outline,
+                                size: 16,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '5,620 others joined in this prayer today',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
 
                           // --- Reflection Field ---
                           Text(
@@ -179,6 +199,53 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _shareToCommunity,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _shareToCommunity = value ?? false;
+                                  });
+                                },
+                                activeColor: theme.colorScheme.primary,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Share anonymously with the community',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          // --- Save to Journal Button ---
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => _saveJournal(context, verse.id),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                side: BorderSide(
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                              child: Text(
+                                'Save to Journal',
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
                           Row(
                             children: [
                               Checkbox(
@@ -304,6 +371,14 @@ class _PrayerScreenState extends State<PrayerScreen> {
             ? '📖 Reflection saved and shared with community!' 
             : '📖 Your reflection has been saved!'),
           backgroundColor: theme.colorScheme.primary,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please write a reflection before saving.'),
+          backgroundColor: theme.colorScheme.error,
           duration: const Duration(seconds: 2),
         ),
       );

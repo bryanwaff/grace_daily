@@ -96,6 +96,16 @@ class GraceDailyDatabase {
     await insertVerses(verses);
   }
 
+  /// Force-clears local Firestore cache to ensure fresh data is fetched from the server.
+  Future<void> clearCache() async {
+    try {
+      await _firestore.terminate();
+      await _firestore.clearPersistence();
+    } catch (e) {
+      print('Error clearing Firestore cache: $e');
+    }
+  }
+
   Future<void> deleteAllVerses() async {
     // Safeguard or delete if requested (admin only typically)
     print('deleteAllVerses skipped on Cloud database for safety.');

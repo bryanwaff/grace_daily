@@ -6,7 +6,6 @@ class DailyDevotion {
   final String verseReference;   // e.g., "Jeremiah 29:11"
   final String title;            // Devotion title (e.g., "Finding Stillness")
   final String meditationText;   // Main meditation content
-  final String quote;            // Highlighted quote for the day
   final String thoughtForDay;    // Actionable thought/prayer
   final String audioTitle;       // Ambient soundscape name (e.g., "Cathedral Hymns")
   final String? imageUrl;        // Optional image URL
@@ -19,7 +18,6 @@ class DailyDevotion {
     required this.verseReference,
     required this.title,
     required this.meditationText,
-    required this.quote,
     required this.thoughtForDay,
     required this.audioTitle,
     this.imageUrl,
@@ -35,7 +33,6 @@ class DailyDevotion {
       'verseReference': verseReference,
       'title': title,
       'meditationText': meditationText,
-      'quote': quote,
       'thoughtForDay': thoughtForDay,
       'audioTitle': audioTitle,
       'imageUrl': imageUrl,
@@ -52,7 +49,6 @@ class DailyDevotion {
       verseReference: json['verseReference'] as String,
       title: json['title'] as String,
       meditationText: json['meditationText'] as String,
-      quote: json['quote'] as String,
       thoughtForDay: json['thoughtForDay'] as String,
       audioTitle: json['audioTitle'] as String,
       imageUrl: json['imageUrl'] as String?,
@@ -68,7 +64,6 @@ class DailyDevotion {
     String? verseReference,
     String? title,
     String? meditationText,
-    String? quote,
     String? thoughtForDay,
     String? audioTitle,
     String? imageUrl,
@@ -81,7 +76,6 @@ class DailyDevotion {
       verseReference: verseReference ?? this.verseReference,
       title: title ?? this.title,
       meditationText: meditationText ?? this.meditationText,
-      quote: quote ?? this.quote,
       thoughtForDay: thoughtForDay ?? this.thoughtForDay,
       audioTitle: audioTitle ?? this.audioTitle,
       imageUrl: imageUrl ?? this.imageUrl,

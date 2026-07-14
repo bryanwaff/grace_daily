@@ -179,28 +179,6 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              // --- Quote Section ---
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: theme.cardTheme.color,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: theme.colorScheme.outline,
-                                  ),
-                                ),
-                                child: Text(
-                                  verse.quote,
-                                  style: theme.textTheme.bodyLarge?.copyWith(
-                                    fontFamily: 'Newsreader',
-                                    fontStyle: FontStyle.italic,
-                                    height: 1.6,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
                             ],
                           ),
                         ),

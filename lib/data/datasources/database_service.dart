@@ -45,7 +45,6 @@ class DatabaseService {
         verseReference TEXT NOT NULL,
         title TEXT NOT NULL,
         meditationText TEXT NOT NULL,
-        quote TEXT NOT NULL,
         thoughtForDay TEXT NOT NULL,
         audioTitle TEXT,
         imageUrl TEXT,

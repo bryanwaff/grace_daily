@@ -5,7 +5,6 @@ class Verse {
   final String reference; // E.g., "Jeremiah 29:11"
   final String title; // Theme title
   final String reflection; // Devotion/meditation text
-  final String quote; // Featured quote
   final String thoughtForTheDay; // Daily thought
   final String dailyIntention; // Prayer intention
   final String prayerText; // Full prayer text
@@ -17,7 +16,6 @@ class Verse {
     required this.reference,
     required this.title,
     required this.reflection,
-    required this.quote,
     required this.thoughtForTheDay,
     required this.dailyIntention,
     required this.prayerText,
@@ -31,7 +29,6 @@ class Verse {
     String? reference,
     String? title,
     String? reflection,
-    String? quote,
     String? thoughtForTheDay,
     String? dailyIntention,
     String? prayerText,
@@ -43,7 +40,6 @@ class Verse {
       reference: reference ?? this.reference,
       title: title ?? this.title,
       reflection: reflection ?? this.reflection,
-      quote: quote ?? this.quote,
       thoughtForTheDay: thoughtForTheDay ?? this.thoughtForTheDay,
       dailyIntention: dailyIntention ?? this.dailyIntention,
       prayerText: prayerText ?? this.prayerText,
@@ -59,7 +55,6 @@ class Verse {
       'reference': reference,
       'title': title,
       'reflection': reflection,
-      'quote': quote,
       'thoughtForTheDay': thoughtForTheDay,
       'dailyIntention': dailyIntention,
       'prayerText': prayerText,
@@ -75,7 +70,6 @@ class Verse {
       reference: json['reference'],
       title: json['title'],
       reflection: json['reflection'],
-      quote: json['quote'],
       thoughtForTheDay: json['thoughtForTheDay'],
       dailyIntention: json['dailyIntention'],
       prayerText: json['prayerText'],
